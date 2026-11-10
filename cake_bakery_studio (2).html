@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cake Bakery Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fdf2f8;
+        }
+        .font-heading {
+            font-family: 'Fredoka One', cursive;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-rose-200">
+
+    <!-- Header Navigation Bar -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-rose-100 sticky top-0 z-30 px-4 py-3 sm:px-8">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-400 to-pink-500 flex items-center justify-center text-white shadow-md shadow-rose-200">
+                    🍰
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-heading text-rose-600 tracking-wide">Cake Bakery Studio</h1>
+                    <p class="text-xs text-slate-500 font-medium hidden sm:block">Design your custom single-tier cake step-by-step!</p>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center gap-2">
+                <button onclick="toggleAudio()" id="soundToggleBtn" class="p-2 sm:px-3.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 flex items-center gap-1.5 transition">
+                    <span id="soundIcon">🔊</span>
+                    <span class="hidden sm:inline" id="soundLabel">Sound On</span>
+                </button>
+                <button onclick="resetCake(true)" class="p-2 sm:px-3.5 sm:py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-xs font-bold text-rose-600 flex items-center gap-1.5 transition border border-rose-200">
+                    <span>🔄</span>
+                    <span class="hidden sm:inline">Start Over</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Builder Layout -->
+    <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+        <!-- Stepper Visual Progress Bar -->
+        <nav aria-label="Progress" class="mb-6 sm:mb-8">
+            <ol role="list" class="flex items-center justify-between w-full max-w-2xl mx-auto relative">
+                <!-- Connecting Background Line -->
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
+                <div id="progressLine" class="absolute top-1/2 left-0 h-1 bg-rose-500 -translate-y-1/2 z-0 transition-all duration-300" style="width: 0%;"></div>
+
+                <!-- Step 1 Indicator -->
+                <li class="relative z-10 flex flex-col items-center">
+                    <button onclick="goToStep(1)" id="step-btn-1" class="w-10 h-10 rounded-full bg-rose-500 text-white font-heading text-sm flex items-center justify-center shadow-md ring-4 ring-rose-100 transition">1</button>
+                    <span class="text-[11px] font-bold text-rose-600 mt-1 hidden sm:block">Shape</span>
+                </li>
+                <!-- Step 2 Indicator -->
+                <li class="relative z-10 flex flex-col items-center">
+                    <button onclick="goToStep(2)" id="step-btn-2" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">2</button>
+                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block">Flavor</span>
+                </li>
+                <!-- Step 3 Indicator -->
+                <li class="relative z-10 flex flex-col items-center">
+                    <button onclick="goToStep(3)" id="step-btn-3" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">3</button>
+                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block">Frosting</span>
+                </li>
+                <!-- Step 4 Indicator -->
+                <li class="relative z-10 flex flex-col items-center">
+                    <button onclick="goToStep(4)" id="step-btn-4" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">4</button>
+                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block">Decorate</span>
+                </li>
+                <!-- Step 5 Indicator -->
+                <li class="relative z-10 flex flex-col items-center">
+                    <button onclick="goToStep(5)" id="step-btn-5" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">5</button>
+                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block">Reveal</span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Two Column Studio Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- LEFT COLUMN: Live Visual Cake Renderer Studio Canvas -->
+            <div class="lg:col-span-7 bg-white p-6 rounded-3xl border border-rose-100 shadow-xl shadow-rose-100/50 flex flex-col items-center justify-between min-h-[440px] relative overflow-hidden">
+                
+                <!-- Dynamic Summary Pill -->
+                <div class="w-full flex justify-between items-center z-10 mb-2">
+                    <span id="cakeSummaryTag" class="px-3 py-1 rounded-full bg-rose-50 text-rose-600 font-semibold text-xs border border-rose-200">
+                        Single Tier Circle Cake
+                    </span>
+                    <span class="text-xs text-slate-400 font-medium">Live Preview</span>
+                </div>
+
+                <!-- SVG Interactive Cake Canvas -->
+                <div class="w-full flex-grow flex items-center justify-center relative py-4">
+                    <svg id="cakeSvg" viewBox="0 0 500 450" class="w-full max-w-[420px] h-auto drop-shadow-xl transition-all duration-300">
+                        <!-- SVG elements dynamically injected by JS -->
+                    </svg>
+                </div>
+
+                <!-- Interactive Hint Footer -->
+                <div class="z-10 text-center text-slate-400 text-xs font-medium mt-2">
+                    ✨ Customize options on the right to see live changes
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Step-by-Step Options & Wizard Panel -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-3xl border border-rose-100 shadow-xl shadow-rose-100/50 flex flex-col justify-between min-h-[440px]">
+                
+                <div id="stepPanelsContainer">
+                    <!-- Step 1: Shape Selection -->
+                    <div id="step-1-content" class="step-panel space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h2 class="text-xl text-rose-600 font-heading">Step 1: Choose Cake Shape</h2>
+                            <p class="text-xs text-slate-500">Pick the shape for your cake base.</p>
+                        </div>
+
+                        <!-- Cake Shape Options -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <!-- Circle Shape -->
+                            <button type="button" onclick="setShape('circle')" id="shape-circle" class="shape-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center gap-2 transition hover:border-rose-300">
+                                <div class="w-10 h-10 rounded-full border-2 border-slate-400 bg-amber-100"></div>
+                                <span class="text-xs font-bold text-slate-700">Circle</span>
+                            </button>
+                            <!-- Square Shape -->
+                            <button type="button" onclick="setShape('square')" id="shape-square" class="shape-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center gap-2 transition hover:border-rose-300">
+                                <div class="w-10 h-10 rounded-lg border-2 border-slate-400 bg-amber-100"></div>
+                                <span class="text-xs font-bold text-slate-700">Square</span>
+                            </button>
+                            <!-- Number Shape -->
+                            <button type="button" onclick="setShape('number')" id="shape-number" class="shape-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center gap-2 transition hover:border-rose-300">
+                                <div class="w-10 h-10 rounded-lg border-2 border-slate-400 bg-amber-100 flex items-center justify-center font-heading text-slate-700 text-sm">
+                                    6
+                                </div>
+                                <span class="text-xs font-bold text-slate-700">Number 6</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Flavors & Colors -->
+                    <div id="step-2-content" class="step-panel hidden space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h2 class="text-xl text-rose-600 font-heading">Step 2: Flavor & Sponge Color</h2>
+                            <p class="text-xs text-slate-500">Pick the delicious flavor for your cake.</p>
+                        </div>
+
+                        <!-- Flavor Selection Cards -->
+                        <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+                            <button type="button" onclick="setFlavor('chocolate')" id="flavor-chocolate" class="flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                                <span class="w-12 h-12 rounded-full bg-[#5c3a21] border-2 border-white shadow-md inline-block"></span>
+                                <span class="text-sm font-bold text-slate-700">Rich Chocolate</span>
+                            </button>
+                            <button type="button" onclick="setFlavor('vanilla')" id="flavor-vanilla" class="flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                                <span class="w-12 h-12 rounded-full bg-[#fce09b] border-2 border-white shadow-md inline-block"></span>
+                                <span class="text-sm font-bold text-slate-700">Classic Vanilla</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Frosting Styles & Colors -->
+                    <div id="step-3-content" class="step-panel hidden space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h2 class="text-xl text-rose-600 font-heading">Step 3: Frosting</h2>
+                            <p class="text-xs text-slate-500">Choose your frosting option (updates only the top surface color)!</p>
+                        </div>
+
+                        <!-- Frosting Selection Cards -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-2">Top Frosting Choice:</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="setFrostingOption('none')" id="frost-opt-none" class="frost-opt-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                                    <span class="w-10 h-10 rounded-full bg-slate-200 border-2 border-dashed border-slate-400 flex items-center justify-center text-slate-500 font-bold text-xs">❌</span>
+                                    <span class="text-xs font-bold text-slate-700">No Frosting</span>
+                                </button>
+                                <button type="button" onclick="setFrostingOption('white')" id="frost-opt-white" class="frost-opt-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                                    <span class="w-10 h-10 rounded-full bg-[#fffef0] border-2 border-slate-300 shadow-sm inline-block"></span>
+                                    <span class="text-xs font-bold text-slate-700">White Chocolate</span>
+                                </button>
+                                <button type="button" onclick="setFrostingOption('dark')" id="frost-opt-dark" class="frost-opt-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                                    <span class="w-10 h-10 rounded-full bg-[#3d2514] border-2 border-white shadow-sm inline-block"></span>
+                                    <span class="text-xs font-bold text-slate-700">Dark Chocolate</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Toppings & Candles -->
+                    <div id="step-4-content" class="step-panel hidden space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h2 class="text-xl text-rose-600 font-heading">Step 4: Toppings & Message</h2>
+                            <p class="text-xs text-slate-500">Pick up to 2 delicious toppings for the top of your cake!</p>
+                        </div>
+
+                        <!-- Toppings Selection Cards (Limit 2) -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs font-bold text-slate-700">Choose Toppings (Up to 2):</label>
+                                <span id="toppingCounter" class="text-xs font-bold text-rose-600">0 / 2 selected</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <button type="button" onclick="toggleToppingChoice('sprinkles')" id="top-btn-sprinkles" class="topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300">
+                                    <span class="text-base">✨</span>
+                                    <span>Rainbow Sprinkles</span>
+                                </button>
+                                <button type="button" onclick="toggleToppingChoice('mnm')" id="top-btn-mnm" class="topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300">
+                                    <span class="text-base">🔴</span>
+                                    <span>Mini M&Ms</span>
+                                </button>
+                                <button type="button" onclick="toggleToppingChoice('marshmallows')" id="top-btn-marshmallows" class="topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300">
+                                    <span class="text-base">☁️</span>
+                                    <span>Mini Marshmallows</span>
+                                </button>
+                                <button type="button" onclick="toggleToppingChoice('oreos')" id="top-btn-oreos" class="topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300">
+                                    <span class="text-base">🔳</span>
+                                    <span>Standing Oreos</span>
+                                </button>
+                                <button type="button" onclick="toggleToppingChoice('chocchip')" id="top-btn-chocchip" class="topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300">
+                                    <span class="text-base">🍪</span>
+                                    <span>Choc Chip Cookies</span>
+                                </button>
+                            </div>
+
+                            <!-- Limit warning notice -->
+                            <div id="toppingLimitNotice" class="hidden text-[11px] font-bold text-rose-500 bg-rose-50 p-2 rounded-xl text-center border border-rose-200">
+                                ⚠️ You can only pick up to 2 toppings! Deselect one to choose another.
+                            </div>
+                        </div>
+
+                        <!-- Candles Style Selection -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-2">Candles Option:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setCandleType('none')" id="candle-opt-none" class="candle-opt-btn p-2.5 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-1.5 transition hover:border-rose-300">
+                                    <span class="text-base">🚫</span>
+                                    <span class="text-xs font-bold text-slate-700">No Candles</span>
+                                </button>
+                                <button type="button" onclick="setCandleType('7candles')" id="candle-opt-7candles" class="candle-opt-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-1.5 transition hover:border-rose-300">
+                                    <span class="text-base">🕯️</span>
+                                    <span class="text-xs font-bold text-slate-700">7 Candles</span>
+                                </button>
+                                <button type="button" onclick="setCandleType('number6')" id="candle-opt-number6" class="candle-opt-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-1.5 transition hover:border-rose-300">
+                                    <span class="font-heading text-rose-500 text-base">6️⃣</span>
+                                    <span class="text-xs font-bold text-slate-700">"6" Candle</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Final Reveal & Export -->
+                    <div id="step-5-content" class="step-panel hidden space-y-5">
+                        <div class="border-b border-slate-100 pb-3 text-center">
+                            <h2 class="text-2xl text-rose-600 font-heading">🎉 Masterpiece Complete!</h2>
+                            <p class="text-xs text-slate-500">Here is your recipe summary:</p>
+                        </div>
+
+                        <!-- Summary Recipe Box -->
+                        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-xs space-y-2">
+                            <ul id="recipeSummaryList" class="space-y-1.5 text-slate-700">
+                                <!-- Dynamically populated by JS -->
+                            </ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col gap-2 pt-2">
+                            <button type="button" onclick="downloadCakeImage()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-heading text-sm shadow-md shadow-rose-200 transition flex items-center justify-center gap-2">
+                                📸 Save Image of Cake
+                            </button>
+                            <button type="button" onclick="resetCake(false)" class="w-full py-2.5 rounded-2xl border-2 border-rose-200 text-rose-600 font-bold text-xs hover:bg-rose-50 transition">
+                                🎂 Bake Another Cake
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEPPER FOOTER NAVIGATION BUTTONS -->
+                <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-6">
+                    <button type="button" id="prevBtn" onclick="prevStep()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition hidden">
+                        ← Back
+                    </button>
+
+                    <button type="button" id="nextBtn" onclick="nextStep()" class="ml-auto px-6 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-rose-200 transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400 border-t border-rose-100 bg-white/50 mt-8">
+        Cake Bakery Studio &copy; Built with HTML & SVG Renderer
+    </footer>
+
+    <!-- AUDIO SYNTH & LOGIC SCRIPTS -->
+    <script>
+        // --- AUDIO SYNTH SETUP ---
+        let audioEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'pop') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'fanfare') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.value = freq;
+                        const startTime = audioCtx.currentTime + (idx * 0.1);
+                        g.gain.setValueAtTime(0.1, startTime);
+                        g.gain.linearRampToValueAtTime(0.01, startTime + 0.25);
+                        o.start(startTime);
+                        o.stop(startTime + 0.25);
+                    });
+                }
+            } catch (e) {
+                // Audio fallback
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('soundIcon').innerText = audioEnabled ? '🔊' : '🔇';
+            document.getElementById('soundLabel').innerText = audioEnabled ? 'Sound On' : 'Muted';
+        }
+
+        // --- STATE MANAGEMENT ---
+        let currentStep = 1;
+
+        // Default: No flavor, no frosting, no candles, white default base
+        const cakeState = {
+            shape: 'circle',
+            height: 55,
+            ageNumber: 6,
+            flavor: null,          
+            frostingType: 'none',  
+            frostingColor: null,
+            candleType: 'none',    
+            selectedToppings: []
+        };
+
+        const flavorColors = {
+            chocolate: { base: '#5c3a21', dark: '#3d2514', light: '#7a4e2c', name: 'Rich Chocolate' },
+            vanilla: { base: '#fce09b', dark: '#e5c479', light: '#fff1c5', name: 'Classic Vanilla' },
+            plain: { base: '#ffffff', dark: '#e2e8f0', light: '#ffffff', name: 'White Sponge' } 
+        };
+
+        const frostingColors = {
+            white: '#ffffff',
+            dark: '#3d2514'
+        };
+
+        // --- STEPPER NAVIGATION LOGIC ---
+        function goToStep(step) {
+            playSound('click');
+            currentStep = step;
+            renderStepUI();
+            if (currentStep === 5) {
+                triggerCelebrationConfetti();
+                populateRecipeSummary();
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < 5) goToStep(currentStep + 1);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        }
+
+        function renderStepUI() {
+            const pct = ((currentStep - 1) / 4) * 100;
+            document.getElementById('progressLine').style.width = `${pct}%`;
+
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`step-btn-${i}`);
+                if (i <= currentStep) {
+                    btn.className = 'w-10 h-10 rounded-full bg-rose-500 text-white font-heading text-sm flex items-center justify-center shadow-md ring-4 ring-rose-100 transition';
+                } else {
+                    btn.className = 'w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition';
+                }
+
+                const panel = document.getElementById(`step-${i}-content`);
+                if (panel) {
+                    if (i === currentStep) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                }
+            }
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+
+            if (currentStep === 5) {
+                nextBtn.classList.add('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- SELECTION HANDLERS ---
+        function setShape(shape) {
+            playSound('pop');
+            cakeState.shape = shape;
+
+            document.querySelectorAll('.shape-btn').forEach(btn => {
+                btn.className = 'shape-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center gap-2 transition hover:border-rose-300';
+            });
+            document.getElementById(`shape-${shape}`).className = 'shape-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center gap-2 transition hover:border-rose-300';
+
+            renderCakeSVG();
+        }
+
+        function setFlavor(flavor) {
+            playSound('pop');
+            cakeState.flavor = flavor;
+
+            document.querySelectorAll('.flavor-btn').forEach(btn => {
+                btn.className = 'flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
+            });
+            document.getElementById(`flavor-${flavor}`).className = 'flavor-btn p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
+
+            renderCakeSVG();
+        }
+
+        function setFrostingOption(type) {
+            playSound('pop');
+            cakeState.frostingType = type;
+
+            document.querySelectorAll('.frost-opt-btn').forEach(btn => {
+                btn.className = 'frost-opt-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
+            });
+            document.getElementById(`frost-opt-${type}`).className = 'frost-opt-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
+
+            if (type === 'none') {
+                cakeState.frostingColor = null;
+            } else {
+                cakeState.frostingColor = frostingColors[type];
+            }
+
+            renderCakeSVG();
+        }
+
+        function toggleToppingChoice(type) {
+            const index = cakeState.selectedToppings.indexOf(type);
+            const notice = document.getElementById('toppingLimitNotice');
+
+            if (index > -1) {
+                playSound('click');
+                cakeState.selectedToppings.splice(index, 1);
+                if (notice) notice.classList.add('hidden');
+            } else {
+                if (cakeState.selectedToppings.length >= 2) {
+                    playSound('click');
+                    if (notice) notice.classList.remove('hidden');
+                    return;
+                }
+                playSound('pop');
+                cakeState.selectedToppings.push(type);
+                if (notice) notice.classList.add('hidden');
+            }
+
+            updateToppingUI();
+            renderCakeSVG();
+        }
+
+        function updateToppingUI() {
+            const allTypes = ['sprinkles', 'mnm', 'marshmallows', 'oreos', 'chocchip'];
+            allTypes.forEach(t => {
+                const btn = document.getElementById(`top-btn-${t}`);
+                if (btn) {
+                    if (cakeState.selectedToppings.includes(t)) {
+                        btn.className = 'topping-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 text-xs font-bold text-rose-600 flex items-center justify-start gap-2 transition hover:border-rose-300';
+                    } else {
+                        btn.className = 'topping-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-start gap-2 transition hover:border-rose-300';
+                    }
+                }
+            });
+
+            const countLabel = document.getElementById('toppingCounter');
+            if (countLabel) {
+                countLabel.innerText = `${cakeState.selectedToppings.length} / 2 selected`;
+            }
+        }
+
+        function setCandleType(type) {
+            playSound('pop');
+            cakeState.candleType = type;
+
+            document.querySelectorAll('.candle-opt-btn').forEach(btn => {
+                btn.className = 'candle-opt-btn p-2.5 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-1.5 transition hover:border-rose-300';
+            });
+            const selectedBtn = document.getElementById(`candle-opt-${type}`);
+            if (selectedBtn) {
+                selectedBtn.className = 'candle-opt-btn p-2.5 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-1.5 transition hover:border-rose-300';
+            }
+
+            renderCakeSVG();
+        }
+
+        function resetCake(confirmUser = false) {
+            if (confirmUser && !confirm("Start over and reset your cake design?")) return;
+
+            cakeState.shape = 'circle';
+            cakeState.height = 55;
+            cakeState.ageNumber = 6;
+            cakeState.flavor = null;
+            cakeState.frostingType = 'none';
+            cakeState.frostingColor = null;
+            cakeState.candleType = 'none';
+            cakeState.selectedToppings = [];
+
+            const notice = document.getElementById('toppingLimitNotice');
+            if (notice) notice.classList.add('hidden');
+
+            setShape('circle');
+            
+            document.querySelectorAll('.flavor-btn').forEach(btn => {
+                btn.className = 'flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center gap-2 transition hover:border-rose-300';
+            });
+
+            setFrostingOption('none');
+            setCandleType('none');
+            updateToppingUI();
+
+            goToStep(1);
+            renderCakeSVG();
+        }
+
+        // --- SVG DYNAMIC RENDERER ---
+        function renderCakeSVG() {
+            const svg = document.getElementById('cakeSvg');
+            let html = '';
+
+            const flavorObj = cakeState.flavor ? flavorColors[cakeState.flavor] : flavorColors.plain;
+            
+            const topColor = cakeState.frostingType === 'none' ? flavorObj.base : cakeState.frostingColor;
+            const sideColor = flavorObj.base;
+            const sideDarkColor = flavorObj.dark;
+
+            const shapeLabel = cakeState.shape === 'number' ? `Number 6` : (cakeState.shape.charAt(0).toUpperCase() + cakeState.shape.slice(1));
+            document.getElementById('cakeSummaryTag').innerText = `Single Tier ${shapeLabel} Cake`;
+
+            html += `
+                <defs>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+                        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
+                    </filter>
+                </defs>
+            `;
+
+            // Vertically centered baseline height
+            const baseCenterY = 315;
+            const topTier = { y: baseCenterY, width: 280, height: cakeState.height, rx: 140, ry: 25 };
+
+            if (cakeState.shape === 'number') {
+                html += renderNumberCake(6, sideColor, sideDarkColor, topColor);
+            } else {
+                html += renderTier(topTier, 0, cakeState.shape, sideColor, sideDarkColor, topColor);
+            }
+
+            let topY;
+            if (cakeState.shape === 'number') {
+                topY = 210; 
+            } else {
+                topY = topTier.y - topTier.height; 
+            }
+
+            if (cakeState.selectedToppings.includes('sprinkles')) {
+                html += renderSprinkles(topTier, cakeState.shape, topY);
+            }
+            if (cakeState.selectedToppings.includes('mnm')) {
+                html += renderMnMs(topTier, cakeState.shape, topY);
+            }
+            if (cakeState.selectedToppings.includes('marshmallows')) {
+                html += renderMarshmallows(topTier, cakeState.shape, topY);
+            }
+            if (cakeState.selectedToppings.includes('oreos')) {
+                html += renderStandingOreos(topTier, cakeState.shape, topY);
+            }
+            if (cakeState.selectedToppings.includes('chocchip')) {
+                html += renderStandingChocChips(topTier, cakeState.shape, topY);
+            }
+
+            if (cakeState.candleType && cakeState.candleType !== 'none') {
+                html += renderCandles(cakeState.candleType, topY, cakeState.shape);
+            }
+
+            svg.innerHTML = html;
+        }
+
+        // --- RENDER HELPERS ---
+        function renderTier(tier, tierIndex, shape, sideColor, sideDarkColor, topColor) {
+            let html = '';
+            const cx = 250;
+            const cy = tier.y;
+            const rx = tier.width / 2;
+            const ry = tier.ry;
+            const h = tier.height;
+            const topY = cy - h;
+
+            if (shape === 'square') {
+                const w = tier.width * 0.75;
+                const halfW = w / 2;
+                const rectTopY = cy - h;
+                const topDepth = 35;
+
+                html += `
+                    <!-- Square Cake Body Front Face -->
+                    <rect x="${cx - halfW}" y="${rectTopY}" width="${w}" height="${h}" fill="${sideColor}" stroke="#000000" stroke-width="1"/>
+
+                    <!-- Top Surface (Frosting Color) -->
+                    <polygon points="${cx - halfW},${rectTopY} ${cx - halfW + 20},${rectTopY - topDepth} ${cx + halfW + 20},${rectTopY - topDepth} ${cx + halfW},${rectTopY}" fill="${topColor}" stroke="#000000" stroke-width="1"/>
+
+                    <!-- Side Depth Face -->
+                    <polygon points="${cx + halfW},${rectTopY} ${cx + halfW + 20},${rectTopY - topDepth} ${cx + halfW + 20},${rectTopY - topDepth + h} ${cx + halfW},${cy}" fill="${sideDarkColor}" stroke="#000000" stroke-width="1"/>
+                `;
+
+            } else {
+                html += `
+                    <g>
+                        <!-- Cylinder Side -->
+                        <path d="M ${cx - rx} ${topY} A ${rx} ${ry} 0 0 0 ${cx + rx} ${topY} L ${cx + rx} ${cy} A ${rx} ${ry} 0 0 1 ${cx - rx} ${cy} Z" fill="${sideColor}" stroke="#000000" stroke-width="1"/>
+
+                        <!-- Top Surface Ellipse -->
+                        <ellipse cx="${cx}" cy="${topY}" rx="${rx}" ry="${ry}" fill="${topColor}" stroke="#000000" stroke-width="1"/>
+                    </g>
+                `;
+            }
+
+            return html;
+        }
+
+        function renderNumberCake(num, sideColor, sideDarkColor, topColor) {
+            const numStr = "6";
+            const cx = 250;
+            const topY = 210;
+            const depth = 38;
+
+            return `
+                <g transform="translate(0, 15)">
+                    <!-- Shadow base on surface -->
+                    <g transform="translate(${cx}, ${topY + depth + 14}) scale(1, 0.45)">
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
+                    </g>
+
+                    <!-- Extruded Side Walls -->
+                    ${Array.from({ length: depth }, (_, i) => {
+                        const stepY = topY + depth - i;
+                        return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideDarkColor}" stroke="#000000" stroke-width="4" stroke-linejoin="round">${numStr}</text>
+                        </g>`;
+                    }).join('')}
+
+                    <!-- Top Surface -->
+                    <g transform="translate(${cx}, ${topY}) scale(1, 0.45)">
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#000000" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                    </g>
+                </g>
+            `;
+        }
+
+        // --- TOPPING GENERATION HELPERS WITH SHAPE ADAPTATION ---
+        function seededRandom(seed) {
+            const x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function getTopSurfacePoints(shape, topY, count, seedOffset = 0) {
+            const points = [];
+            const cx = 250;
+
+            if (shape === 'square') {
+                const w = 210 * 0.75;
+                const halfW = w / 2;
+                const rectTopY = topY;
+                const topDepth = 35;
+
+                for (let i = 0; i < count; i++) {
+                    const u = seededRandom(i + seedOffset + 100);
+                    const v = seededRandom(i + seedOffset + 200);
+
+                    const x = (cx - halfW) + u * w + v * 20;
+                    const y = rectTopY - v * topDepth;
+
+                    points.push({ x, y, u, v });
+                }
+            } else if (shape === 'number') {
+                for (let i = 0; i < count; i++) {
+                    const section = seededRandom(i + seedOffset + 300);
+                    let x, y;
+                    
+                    if (section < 0.45) {
+                        const angle = seededRandom(i + seedOffset + 400) * Math.PI * 2;
+                        const r = 24 + seededRandom(i + seedOffset + 500) * 30;
+                        x = cx + Math.cos(angle) * r;
+                        y = 198 + Math.sin(angle) * (r * 0.42);
+                    } else {
+                        const t = seededRandom(i + seedOffset + 600);
+                        const angle = -Math.PI * 0.15 + t * Math.PI * 0.85;
+                        const r = 28 + seededRandom(i + seedOffset + 700) * 30;
+                        x = (cx - 10) + Math.cos(angle) * r;
+                        y = 150 + Math.sin(angle) * (r * 0.42);
+                    }
+                    points.push({ x, y });
+                }
+            } else {
+                const rx = 132;
+                const ry = 22;
+                for (let i = 0; i < count; i++) {
+                    const angle = seededRandom(i + seedOffset + 800) * Math.PI * 2;
+                    const r = Math.sqrt(seededRandom(i + seedOffset + 900)) * 0.90;
+                    const x = cx + Math.cos(angle) * (rx * r);
+                    const y = topY + Math.sin(angle) * (ry * r) + 4;
+                    points.push({ x, y });
+                }
+            }
+            return points;
+        }
+
+        function getPerimeterPoints(shape, topY, count) {
+            const points = [];
+            const cx = 250;
+
+            if (shape === 'square') {
+                const w = 210 * 0.75;
+                const halfW = w / 2;
+                const rectTopY = topY;
+                const topDepth = 35;
+
+                for (let i = 0; i < count; i++) {
+                    const t = i / count;
+                    let u, v;
+                    if (t < 0.25) {
+                        u = (t / 0.25) * 0.9 + 0.05;
+                        v = 0.04;
+                    } else if (t < 0.5) {
+                        u = 0.96;
+                        v = ((t - 0.25) / 0.25) * 0.9 + 0.05;
+                    } else if (t < 0.75) {
+                        u = 0.95 - ((t - 0.5) / 0.25) * 0.9;
+                        v = 0.96;
+                    } else {
+                        u = 0.04;
+                        v = 0.95 - ((t - 0.75) / 0.25) * 0.9;
+                    }
+
+                    const x = (cx - halfW) + u * w + v * 20;
+                    const y = rectTopY - v * topDepth;
+                    points.push({ x, y });
+                }
+            } else if (shape === 'number') {
+                for (let i = 0; i < count; i++) {
+                    const t = i / count;
+                    let x, y;
+                    if (t < 0.6) {
+                        const angle = (t / 0.6) * Math.PI * 2;
+                        const r = 55;
+                        x = cx + Math.cos(angle) * r;
+                        y = 198 + Math.sin(angle) * (r * 0.42);
+                    } else {
+                        const armT = (t - 0.6) / 0.4;
+                        const angle = -Math.PI * 0.15 + armT * Math.PI * 0.85;
+                        const r = 55;
+                        x = (cx - 10) + Math.cos(angle) * r;
+                        y = 150 + Math.sin(angle) * (r * 0.42);
+                    }
+                    points.push({ x, y });
+                }
+            } else {
+                const rx = 130;
+                const ry = 21;
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * Math.PI * 2;
+                    const x = cx + Math.cos(angle) * rx;
+                    const y = topY + Math.sin(angle) * ry;
+                    points.push({ x, y });
+                }
+            }
+            return points;
+        }
+
+        function renderSprinkles(topTier, shape, topY) {
+            let html = '';
+            const colors = ['#f43f5e', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#ec4899'];
+            const count = shape === 'number' ? 45 : 60;
+            const points = getTopSurfacePoints(shape, topY, count, 10);
+
+            points.forEach((pt, i) => {
+                const color = colors[i % colors.length];
+                const rot = ((i * 37) % 180);
+                html += `
+                    <rect x="${pt.x - 4}" y="${pt.y - 1.5}" width="8" height="3" rx="1.5" fill="${color}" transform="rotate(${rot}, ${pt.x}, ${pt.y})" opacity="0.95"/>
+                `;
+            });
+            return html;
+        }
+
+        function renderMnMs(topTier, shape, topY) {
+            let html = '';
+            const colors = ['#ef4444', '#3b82f6', '#eab308', '#10b981', '#f97316', '#8b5cf6'];
+            const count = shape === 'number' ? 22 : 30;
+            const points = getTopSurfacePoints(shape, topY, count, 20);
+
+            points.forEach((pt, i) => {
+                const color = colors[i % colors.length];
+                html += `
+                    <g transform="translate(${pt.x}, ${pt.y})">
+                        <ellipse cx="0" cy="0" rx="4.5" ry="3.5" fill="${color}" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>
+                        <ellipse cx="-1" cy="-1" rx="2" ry="1.2" fill="#ffffff" opacity="0.4"/>
+                    </g>
+                `;
+            });
+            return html;
+        }
+
+        function renderMarshmallows(topTier, shape, topY) {
+            let html = '';
+            const mColors = ['#ffffff', '#fef3c7', '#fce7f3', '#e0f2fe'];
+            const count = shape === 'number' ? 18 : 25;
+            const points = getTopSurfacePoints(shape, topY, count, 30);
+
+            points.forEach((pt, i) => {
+                const color = mColors[i % mColors.length];
+                const rot = ((i * 29) % 360);
+                html += `
+                    <g transform="translate(${pt.x}, ${pt.y}) rotate(${rot})">
+                        <rect x="-4" y="-3" width="8" height="6" rx="2" fill="${color}" stroke="#1e293b" stroke-width="1.2"/>
+                        <rect x="-3" y="-2" width="6" height="4" rx="1.5" fill="#ffffff" opacity="0.5"/>
+                    </g>
+                `;
+            });
+            return html;
+        }
+
+        function renderStandingOreos(topTier, shape, topY) {
+            let html = '';
+            const count = shape === 'number' ? 12 : 16;
+            const points = getPerimeterPoints(shape, topY, count);
+
+            points.forEach((pt, i) => {
+                const tilt = ((i * 17) % 30) - 15;
+                html += `
+                    <g transform="translate(${pt.x}, ${pt.y - 4}) rotate(${tilt})">
+                        <ellipse cx="0" cy="5" rx="6" ry="2" fill="rgba(0,0,0,0.2)"/>
+                        <path d="M -8 4 A 8 8 0 0 1 8 4 Z" fill="#1c1917" stroke="#09090b" stroke-width="0.8"/>
+                        <path d="M -7.5 4 L 7.5 4" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M -7.5 3 A 7.5 7.5 0 0 1 7.5 3 Z" fill="#27272a" stroke="#18181b" stroke-width="0.8"/>
+                        <path d="M -5 2.5 A 5 5 0 0 1 5 2.5" stroke="#3f3f46" stroke-width="0.8" fill="none" stroke-dasharray="1.5,1"/>
+                        <path d="M -2.5 2 A 2.5 2.5 0 0 1 2.5 2" stroke="#3f3f46" stroke-width="0.8" fill="none"/>
+                    </g>
+                `;
+            });
+            return html;
+        }
+
+        function renderStandingChocChips(topTier, shape, topY) {
+            let html = '';
+            const count = shape === 'number' ? 12 : 16;
+            const points = getPerimeterPoints(shape, topY, count);
+
+            points.forEach((pt, i) => {
+                const tilt = ((i * 23) % 30) - 15;
+                html += `
+                    <g transform="translate(${pt.x}, ${pt.y - 4}) rotate(${tilt})">
+                        <ellipse cx="0" cy="5" rx="6" ry="2" fill="rgba(0,0,0,0.2)"/>
+                        <path d="M -8 4 A 8 8 0 0 1 8 4 Z" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+                        <path d="M -7.5 3.5 A 7.5 7.5 0 0 1 7.5 3.5 Z" fill="#f59e0b" opacity="0.9"/>
+                        <circle cx="-3" cy="0" r="1.2" fill="#451a03"/>
+                        <circle cx="2" cy="-2" r="1.4" fill="#381002"/>
+                        <circle cx="4" cy="1" r="1.1" fill="#451a03"/>
+                        <circle cx="-1" cy="-3.5" r="1" fill="#381002"/>
+                    </g>
+                `;
+            });
+            return html;
+        }
+
+        function renderCandles(candleType, topY, shape) {
+            let html = '';
+            const cx = 250;
+
+            if (candleType === 'number6') {
+                let pos = { x: 250, y: topY };
+                if (shape === 'square') {
+                    pos = { x: cx + 10, y: topY - 17.5 };
+                } else if (shape === 'number') {
+                    pos = { x: 250, y: 190 };
+                } else {
+                    pos = { x: 250, y: topY };
+                }
+
+                return `
+                    <g transform="translate(${pos.x}, ${pos.y + 12})">
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="44" fill="#ffffff" stroke="#000000" stroke-width="3" stroke-linejoin="round">6</text>
+                        <g transform="translate(5, -34)">
+                            <path d="M 0 -8 Q 4 -2 0 2 Q -4 -2 0 -8 Z" fill="#fbbf24">
+                                <animate attributeName="d" values="M 0 -8 Q 4 -2 0 2 Q -4 -2 0 -8 Z; M 0 -9 Q 4.5 -3 0 2 Q -2.5 -3 0 -9 Z; M 0 -8 Q 4 -2 0 2 Q -4 -2 0 -8 Z" dur="0.6s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 0 -5 Q 2.5 -1 0 1 Q -2.5 -1 0 -5 Z" fill="#ef4444"/>
+                        </g>
+                    </g>
+                `;
+            }
+
+            const candlePositions = [];
+            const count = 7;
+
+            if (shape === 'square') {
+                const w = 210 * 0.75;
+                const halfW = w / 2;
+                const rectTopY = topY;
+                const topDepth = 35;
+                for (let i = 0; i < count; i++) {
+                    const step = (i + 1) / (count + 1);
+                    const u = step;
+                    const v = 0.5;
+                    const x = (cx - halfW) + u * w + v * 20;
+                    const y = rectTopY - v * topDepth;
+                    candlePositions.push({ x, y });
+                }
+            } else if (shape === 'number') {
+                for (let i = 0; i < count; i++) {
+                    const step = (i + 1) / (count + 1);
+                    const angle = step * Math.PI * 2;
+                    const r = 30;
+                    const x = cx + Math.cos(angle) * r;
+                    const y = 198 + Math.sin(angle) * (r * 0.42);
+                    candlePositions.push({ x, y });
+                }
+            } else {
+                for (let i = 0; i < count; i++) {
+                    const step = (i + 1) / (count + 1);
+                    const angle = (step - 0.5) * Math.PI * 0.8;
+                    const rx = 85;
+                    const ry = 15;
+                    const x = cx + Math.sin(angle) * rx;
+                    const y = topY + Math.cos(angle) * ry - 4;
+                    candlePositions.push({ x, y });
+                }
+            }
+
+            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6'];
+
+            candlePositions.forEach((pt, i) => {
+                const color = colors[i % colors.length];
+                html += `
+                    <g transform="translate(${pt.x}, ${pt.y})">
+                        <ellipse cx="0" cy="0" rx="3" ry="1.5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="-2.5" y="-22" width="5" height="22" rx="1.5" fill="${color}" stroke="#ffffff" stroke-width="0.6"/>
+                        <line x1="-2.5" y1="-16" x2="2.5" y2="-18" stroke="#ffffff" stroke-width="1.2" opacity="0.8"/>
+                        <line x1="-2.5" y1="-8" x2="2.5" y2="-10" stroke="#ffffff" stroke-width="1.2" opacity="0.8"/>
+                        <line x1="0" y1="-22" x2="0" y2="-26" stroke="#334155" stroke-width="1"/>
+                        <g transform="translate(0, -29)">
+                            <path d="M 0 -7 Q 3.5 -2 0 1 Q -3.5 -2 0 1 Q -3.5 -2 0 -7 Z" fill="#fbbf24">
+                                <animate attributeName="d" values="M 0 -7 Q 3.5 -2 0 1 Q -3.5 -2 0 -7 Z; M 0 -8 Q 4 -3 0 1 Q -2 -3 0 -8 Z; M 0 -7 Q 3.5 -2 0 1 Q -3.5 -2 0 -7 Z" dur="0.6s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 0 -4 Q 2 -1 0 0.5 Q -2 -1 0 -4 Z" fill="#ef4444"/>
+                        </g>
+                    </g>
+                `;
+            });
+
+            return html;
+        }
+
+        function triggerCelebrationConfetti() {
+            playSound('fanfare');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function populateRecipeSummary() {
+            const list = document.getElementById('recipeSummaryList');
+            if (!list) return;
+
+            const shapeText = cakeState.shape === 'number' ? 'Number 6' : (cakeState.shape.charAt(0).toUpperCase() + cakeState.shape.slice(1));
+            const flavorText = cakeState.flavor ? flavorColors[cakeState.flavor]?.name : 'Unflavored Plain Sponge';
+            const frostingText = cakeState.frostingType === 'none' ? 'No Frosting' : (cakeState.frostingType === 'white' ? 'White Chocolate' : 'Dark Chocolate');
+            
+            let candleText = 'No Candles';
+            if (cakeState.candleType === 'number6') candleText = 'Number "6" Candle';
+            else if (cakeState.candleType === '7candles') candleText = '7 Striped Candles';
+
+            const toppingNames = {
+                sprinkles: 'Rainbow Sprinkles',
+                mnm: 'Mini M&Ms',
+                marshmallows: 'Mini Marshmallows',
+                oreos: 'Standing Oreos',
+                chocchip: 'Choc Chip Cookies'
+            };
+            const toppingsText = cakeState.selectedToppings.length > 0
+                ? cakeState.selectedToppings.map(t => toppingNames[t]).join(', ')
+                : 'None';
+
+            list.innerHTML = `
+                <li><strong>🎂 Shape:</strong> Single Tier ${escapeXml(shapeText)}</li>
+                <li><strong>🍫 Flavor:</strong> ${escapeXml(flavorText)}</li>
+                <li><strong>🧁 Top Frosting:</strong> ${escapeXml(frostingText)}</li>
+                <li><strong>✨ Toppings:</strong> ${escapeXml(toppingsText)}</li>
+                <li><strong>🕯️ Candles:</strong> ${escapeXml(candleText)}</li>
+            `;
+        }
+
+        function downloadCakeImage() {
+            playSound('click');
+            const svg = document.getElementById('cakeSvg');
+            if (!svg) return;
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            canvas.width = 500;
+            canvas.height = 450;
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.onload = function () {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                const a = document.createElement('a');
+                a.download = 'my-custom-cake.png';
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        }
+
+        function escapeXml(unsafe) {
+            return unsafe.replace(/[<>&'"]/g, function (c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '\'': return '&apos;';
+                    case '"': return '&quot;';
+                }
+            });
+        }
+
+        window.onload = function() {
+            renderStepUI();
+            renderCakeSVG();
+        };
+    </script>
+</body>
+</html>
