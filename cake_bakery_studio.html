@@ -691,11 +691,11 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Extruded Side Walls -->
+                    <!-- Extruded Side Walls (Using sideColor instead of hardcoded black) -->
                     ${Array.from({ length: depth }, (_, i) => {
                         const stepY = topY + depth - i;
                         return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideDarkColor}" stroke="#000000" stroke-width="4" stroke-linejoin="round">${numStr}</text>
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="#000000" stroke-width="2" stroke-linejoin="round">${numStr}</text>
                         </g>`;
                     }).join('')}
 
