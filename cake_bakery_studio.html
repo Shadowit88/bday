@@ -385,7 +385,7 @@
         const flavorColors = {
             chocolate: { base: '#5c3a21', dark: '#3d2514', light: '#7a4e2c', name: 'Chocolate' },
             vanilla: { base: '#fce09b', dark: '#e5c479', light: '#fff1c5', name: 'Vanilla' },
-            plain: { base: '#ffffff', dark: '#e2e8f0', light: '#ffffff', name: 'White Sponge' } 
+            plain: { base: '#ffffff', dark: '#cbd5e1', light: '#ffffff', name: 'White Sponge' } 
         };
 
         const frostingColors = {
@@ -691,7 +691,7 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Extruded Side Walls (Using dynamic sideColor & sideDarkColor) -->
+                    <!-- Extruded Side Walls (Using plain white base when unselected, or active flavor colors when selected) -->
                     ${Array.from({ length: depth }, (_, i) => {
                         const stepY = topY + depth - i;
                         const sliceColor = i < 12 ? sideColor : sideDarkColor;
