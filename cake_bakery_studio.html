@@ -135,7 +135,7 @@
                     <div id="step-1-content" class="step-panel space-y-5">
                         <div class="border-b border-slate-100 pb-3">
                             <h2 class="text-xl text-rose-600 font-heading">Step 1: Choose Cake Shape</h2>
-                            <p class="text-xs text-slate-500">Pick the shape for your cake base.</p>
+                            <p class="text-xs text-slate-500">Pick the shape for your cake.</p>
                         </div>
 
                         <!-- Cake Shape Options -->
@@ -377,11 +377,11 @@
         // --- STATE MANAGEMENT ---
         let currentStep = 1;
 
-        // Default: No flavor, no frosting, no candles, white default base
+        // Default: No flavor, no frosting, no candles, white default base, height locked at 55px
         const cakeState = {
             shape: 'circle',
-            height: 55,
             ageNumber: 6,
+            height: 55,
             flavor: null,          
             frostingType: 'none',  
             frostingColor: null,
@@ -561,8 +561,8 @@
             if (confirmUser && !confirm("Start over and reset your cake design?")) return;
 
             cakeState.shape = 'circle';
-            cakeState.height = 55;
             cakeState.ageNumber = 6;
+            cakeState.height = 55;
             cakeState.flavor = null;
             cakeState.frostingType = 'none';
             cakeState.frostingColor = null;
@@ -575,7 +575,7 @@
             setShape('circle');
             
             document.querySelectorAll('.flavor-btn').forEach(btn => {
-                btn.className = 'flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center gap-2 transition hover:border-rose-300';
+                btn.className = 'flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
             });
 
             setFrostingOption('none');
@@ -608,9 +608,8 @@
                 </defs>
             `;
 
-            // Vertically centered baseline height
-            const baseCenterY = 315;
-            const topTier = { y: baseCenterY, width: 280, height: cakeState.height, rx: 140, ry: 25 };
+            const currentHeight = cakeState.height;
+            const topTier = { y: 260, width: 280, height: currentHeight, rx: 140, ry: 25 };
 
             if (cakeState.shape === 'number') {
                 html += renderNumberCake(6, sideColor, sideDarkColor, topColor);
@@ -621,6 +620,8 @@
             let topY;
             if (cakeState.shape === 'number') {
                 topY = 210; 
+            } else if (cakeState.shape === 'square') {
+                topY = topTier.y - topTier.height; 
             } else {
                 topY = topTier.y - topTier.height; 
             }
@@ -699,7 +700,7 @@
             return `
                 <g transform="translate(0, 15)">
                     <!-- Shadow base on surface -->
-                    <g transform="translate(${cx}, ${topY + depth + 14}) scale(1, 0.45)">
+                    <g transform="translate(${cx}, ${topY + depth + 12}) scale(1, 0.45)">
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
@@ -732,7 +733,7 @@
             if (shape === 'square') {
                 const w = 210 * 0.75;
                 const halfW = w / 2;
-                const rectTopY = topY;
+                const rectTopY = 260 - cakeState.height;
                 const topDepth = 35;
 
                 for (let i = 0; i < count; i++) {
@@ -751,15 +752,15 @@
                     
                     if (section < 0.45) {
                         const angle = seededRandom(i + seedOffset + 400) * Math.PI * 2;
-                        const r = 24 + seededRandom(i + seedOffset + 500) * 30;
+                        const r = 24 + seededRandom(i + seedOffset + 500) * 32;
                         x = cx + Math.cos(angle) * r;
                         y = 198 + Math.sin(angle) * (r * 0.42);
                     } else {
                         const t = seededRandom(i + seedOffset + 600);
                         const angle = -Math.PI * 0.15 + t * Math.PI * 0.85;
-                        const r = 28 + seededRandom(i + seedOffset + 700) * 30;
+                        const r = 28 + seededRandom(i + seedOffset + 700) * 32;
                         x = (cx - 10) + Math.cos(angle) * r;
-                        y = 150 + Math.sin(angle) * (r * 0.42);
+                        y = 158 + Math.sin(angle) * (r * 0.42);
                     }
                     points.push({ x, y });
                 }
@@ -784,7 +785,7 @@
             if (shape === 'square') {
                 const w = 210 * 0.75;
                 const halfW = w / 2;
-                const rectTopY = topY;
+                const rectTopY = 260 - cakeState.height;
                 const topDepth = 35;
 
                 for (let i = 0; i < count; i++) {
@@ -814,15 +815,15 @@
                     let x, y;
                     if (t < 0.6) {
                         const angle = (t / 0.6) * Math.PI * 2;
-                        const r = 55;
+                        const r = 56;
                         x = cx + Math.cos(angle) * r;
                         y = 198 + Math.sin(angle) * (r * 0.42);
                     } else {
                         const armT = (t - 0.6) / 0.4;
                         const angle = -Math.PI * 0.15 + armT * Math.PI * 0.85;
-                        const r = 55;
+                        const r = 56;
                         x = (cx - 10) + Math.cos(angle) * r;
-                        y = 150 + Math.sin(angle) * (r * 0.42);
+                        y = 158 + Math.sin(angle) * (r * 0.42);
                     }
                     points.push({ x, y });
                 }
@@ -942,7 +943,7 @@
             if (candleType === 'number6') {
                 let pos = { x: 250, y: topY };
                 if (shape === 'square') {
-                    pos = { x: cx + 10, y: topY - 17.5 };
+                    pos = { x: cx + 10, y: (260 - cakeState.height) - 17.5 };
                 } else if (shape === 'number') {
                     pos = { x: 250, y: 190 };
                 } else {
@@ -968,7 +969,7 @@
             if (shape === 'square') {
                 const w = 210 * 0.75;
                 const halfW = w / 2;
-                const rectTopY = topY;
+                const rectTopY = 260 - cakeState.height;
                 const topDepth = 35;
                 for (let i = 0; i < count; i++) {
                     const step = (i + 1) / (count + 1);
@@ -982,7 +983,7 @@
                 for (let i = 0; i < count; i++) {
                     const step = (i + 1) / (count + 1);
                     const angle = step * Math.PI * 2;
-                    const r = 30;
+                    const r = 28;
                     const x = cx + Math.cos(angle) * r;
                     const y = 198 + Math.sin(angle) * (r * 0.42);
                     candlePositions.push({ x, y });
