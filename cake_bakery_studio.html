@@ -107,10 +107,7 @@
             <div class="lg:col-span-7 bg-white p-6 rounded-3xl border border-rose-100 shadow-xl shadow-rose-100/50 flex flex-col items-center justify-between min-h-[440px] relative overflow-hidden">
                 
                 <!-- Dynamic Summary Pill -->
-                <div class="w-full flex justify-between items-center z-10 mb-2">
-                    <span id="cakeSummaryTag" class="px-3 py-1 rounded-full bg-rose-50 text-rose-600 font-semibold text-xs border border-rose-200">
-                        Single Tier Circle Cake
-                    </span>
+                <div class="w-full flex justify-end items-center z-10 mb-2">
                     <span class="text-xs text-slate-400 font-medium">Live Preview</span>
                 </div>
 
@@ -163,7 +160,7 @@
                     <!-- Step 2: Flavors & Colors -->
                     <div id="step-2-content" class="step-panel hidden space-y-5">
                         <div class="border-b border-slate-100 pb-3">
-                            <h2 class="text-xl text-rose-600 font-heading">Step 2: Flavor & Sponge Color</h2>
+                            <h2 class="text-xl text-rose-600 font-heading">Step 2: Flavor</h2>
                             <p class="text-xs text-slate-500">Pick the delicious flavor for your cake.</p>
                         </div>
 
@@ -171,11 +168,11 @@
                         <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
                             <button type="button" onclick="setFlavor('chocolate')" id="flavor-chocolate" class="flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
                                 <span class="w-12 h-12 rounded-full bg-[#5c3a21] border-2 border-white shadow-md inline-block"></span>
-                                <span class="text-sm font-bold text-slate-700">Rich Chocolate</span>
+                                <span class="text-sm font-bold text-slate-700">Chocolate</span>
                             </button>
                             <button type="button" onclick="setFlavor('vanilla')" id="flavor-vanilla" class="flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
                                 <span class="w-12 h-12 rounded-full bg-[#fce09b] border-2 border-white shadow-md inline-block"></span>
-                                <span class="text-sm font-bold text-slate-700">Classic Vanilla</span>
+                                <span class="text-sm font-bold text-slate-700">Vanilla</span>
                             </button>
                         </div>
                     </div>
@@ -184,18 +181,14 @@
                     <div id="step-3-content" class="step-panel hidden space-y-5">
                         <div class="border-b border-slate-100 pb-3">
                             <h2 class="text-xl text-rose-600 font-heading">Step 3: Frosting</h2>
-                            <p class="text-xs text-slate-500">Choose your frosting option (updates only the top surface color)!</p>
+                            <p class="text-xs text-slate-500">Choose your frosting option!</p>
                         </div>
 
                         <!-- Frosting Selection Cards -->
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-2">Top Frosting Choice:</label>
-                            <div class="grid grid-cols-3 gap-3">
-                                <button type="button" onclick="setFrostingOption('none')" id="frost-opt-none" class="frost-opt-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
-                                    <span class="w-10 h-10 rounded-full bg-slate-200 border-2 border-dashed border-slate-400 flex items-center justify-center text-slate-500 font-bold text-xs">❌</span>
-                                    <span class="text-xs font-bold text-slate-700">No Frosting</span>
-                                </button>
-                                <button type="button" onclick="setFrostingOption('white')" id="frost-opt-white" class="frost-opt-btn p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" onclick="setFrostingOption('white')" id="frost-opt-white" class="frost-opt-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300">
                                     <span class="w-10 h-10 rounded-full bg-[#fffef0] border-2 border-slate-300 shadow-sm inline-block"></span>
                                     <span class="text-xs font-bold text-slate-700">White Chocolate</span>
                                 </button>
@@ -377,21 +370,21 @@
         // --- STATE MANAGEMENT ---
         let currentStep = 1;
 
-        // Default: No flavor, no frosting, no candles, white default base, height locked at 55px
+        // Default: Height locked at 55px, default frosting is white chocolate
         const cakeState = {
             shape: 'circle',
             ageNumber: 6,
             height: 55,
             flavor: null,          
-            frostingType: 'none',  
-            frostingColor: null,
+            frostingType: 'white',  
+            frostingColor: '#ffffff',
             candleType: 'none',    
             selectedToppings: []
         };
 
         const flavorColors = {
-            chocolate: { base: '#5c3a21', dark: '#3d2514', light: '#7a4e2c', name: 'Rich Chocolate' },
-            vanilla: { base: '#fce09b', dark: '#e5c479', light: '#fff1c5', name: 'Classic Vanilla' },
+            chocolate: { base: '#5c3a21', dark: '#3d2514', light: '#7a4e2c', name: 'Chocolate' },
+            vanilla: { base: '#fce09b', dark: '#e5c479', light: '#fff1c5', name: 'Vanilla' },
             plain: { base: '#ffffff', dark: '#e2e8f0', light: '#ffffff', name: 'White Sponge' } 
         };
 
@@ -491,11 +484,7 @@
             });
             document.getElementById(`frost-opt-${type}`).className = 'frost-opt-btn p-3 rounded-2xl border-2 border-rose-400 bg-rose-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
 
-            if (type === 'none') {
-                cakeState.frostingColor = null;
-            } else {
-                cakeState.frostingColor = frostingColors[type];
-            }
+            cakeState.frostingColor = frostingColors[type];
 
             renderCakeSVG();
         }
@@ -564,8 +553,8 @@
             cakeState.ageNumber = 6;
             cakeState.height = 55;
             cakeState.flavor = null;
-            cakeState.frostingType = 'none';
-            cakeState.frostingColor = null;
+            cakeState.frostingType = 'white';
+            cakeState.frostingColor = frostingColors['white'];
             cakeState.candleType = 'none';
             cakeState.selectedToppings = [];
 
@@ -578,7 +567,7 @@
                 btn.className = 'flavor-btn p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col items-center text-center gap-2 transition hover:border-rose-300';
             });
 
-            setFrostingOption('none');
+            setFrostingOption('white');
             setCandleType('none');
             updateToppingUI();
 
@@ -593,12 +582,9 @@
 
             const flavorObj = cakeState.flavor ? flavorColors[cakeState.flavor] : flavorColors.plain;
             
-            const topColor = cakeState.frostingType === 'none' ? flavorObj.base : cakeState.frostingColor;
+            const topColor = cakeState.frostingColor;
             const sideColor = flavorObj.base;
             const sideDarkColor = flavorObj.dark;
-
-            const shapeLabel = cakeState.shape === 'number' ? `Number 6` : (cakeState.shape.charAt(0).toUpperCase() + cakeState.shape.slice(1));
-            document.getElementById('cakeSummaryTag').innerText = `Single Tier ${shapeLabel} Cake`;
 
             html += `
                 <defs>
@@ -609,8 +595,6 @@
             `;
 
             const currentHeight = cakeState.height;
-            // Shift circle shape up by an additional 1/3 of its height (55 / 3 ≈ 18.33px)
-            const circleYOffset = 55 + (55 / 3);
             const baseTierY = cakeState.shape === 'circle' ? (260 - (55 / 3)) : 260;
             const topTier = { y: baseTierY, width: 280, height: currentHeight, rx: 140, ry: 25 };
 
@@ -1044,7 +1028,7 @@
 
             const shapeText = cakeState.shape === 'number' ? 'Number 6' : (cakeState.shape.charAt(0).toUpperCase() + cakeState.shape.slice(1));
             const flavorText = cakeState.flavor ? flavorColors[cakeState.flavor]?.name : 'Unflavored Plain Sponge';
-            const frostingText = cakeState.frostingType === 'none' ? 'No Frosting' : (cakeState.frostingType === 'white' ? 'White Chocolate' : 'Dark Chocolate');
+            const frostingText = cakeState.frostingType === 'white' ? 'White Chocolate' : 'Dark Chocolate';
             
             let candleText = 'No Candles';
             if (cakeState.candleType === 'number6') candleText = 'Number "6" Candle';
@@ -1062,7 +1046,7 @@
                 : 'None';
 
             list.innerHTML = `
-                <li><strong>🎂 Shape:</strong> Single Tier ${escapeXml(shapeText)}</li>
+                <li><strong>🎂 Shape:</strong> ${escapeXml(shapeText)}</li>
                 <li><strong>🍫 Flavor:</strong> ${escapeXml(flavorText)}</li>
                 <li><strong>🧁 Top Frosting:</strong> ${escapeXml(frostingText)}</li>
                 <li><strong>✨ Toppings:</strong> ${escapeXml(toppingsText)}</li>
