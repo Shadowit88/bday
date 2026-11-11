@@ -590,11 +590,10 @@
                     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
                         <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
                     </filter>
-                    <!-- Solid Compound Mask for Number 6: Black shapes cut out holes -->
-                    <mask id="solidSixMask">
-                        <rect x="0" y="0" width="500" height="450" fill="white" />
-                        <!-- Outer black background to block anything outside -->
-                    </mask>
+                    <!-- Clip path to perfectly hollow out the inner loop tunnel -->
+                    <clipPath id="sixClipPath">
+                        <path d="M 250 145 C 270 145 285 160 285 185 C 285 210 270 225 250 225 C 230 225 215 210 215 185 C 215 160 230 145 250 145 Z" />
+                    </clipPath>
                 </defs>
             `;
 
@@ -610,7 +609,7 @@
 
             let topY;
             if (cakeState.shape === 'number') {
-                topY = 210; 
+                topY = 130; 
             } else if (cakeState.shape === 'square') {
                 topY = topTier.y - topTier.height; 
             } else {
@@ -683,38 +682,32 @@
         }
 
         function renderNumberCake(num, sideColor, topColor) {
-            const cx = 250;
-            const topY = 210;
+            const topY = 130;
             const depth = 38;
 
-            // Clean SVG Path for Number 6 (Bubble/Fredoka Style with solid outer shape and hollow inner loop)
-            // Outer contour & inner hole defined as a proper compound path
-            const pathData = "M 230 70 C 180 70 145 105 145 160 C 145 215 185 240 230 240 C 275 240 315 205 315 160 C 315 115 275 70 230 70 Z M 230 135 C 250 135 265 150 265 175 C 265 200 250 215 230 215 C 210 215 195 200 195 175 C 195 150 210 135 230 135 Z";
+            // Perfectly centered vector path for number 6
+            const pathData = "M 250 70 C 190 70 150 110 150 170 C 150 230 195 255 250 255 C 305 255 350 215 350 170 C 350 125 305 70 250 70 Z";
 
             return `
-                <g transform="translate(0, 15)">
+                <g>
                     <!-- Shadow base on surface -->
-                    <g transform="translate(${cx}, ${topY + depth + 12}) scale(1, 0.45)">
+                    <g transform="translate(0, ${topY + depth + 12})">
                         <path d="${pathData}" fill="black" opacity="0.12"/>
                     </g>
 
-                    <!-- Solid Extruded Side Walls (Stacked cleanly without overlapping text slices) -->
-                    ${Array.from({ length: depth }, (_, i) => {
-                        const stepY = topY + depth - (i * 0.7);
-                        return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <path d="${pathData}" fill="${sideColor}"/>
-                        </g>`;
-                    }).join('')}
-
-                    <!-- Clean Outer & Inner Silhouette Contour Outline at the bottom -->
-                    <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
-                        <path d="${pathData}" fill="none" stroke="#334155" stroke-width="6" stroke-linejoin="round"/>
+                    <!-- Extruded Side Walls (Cleanly clipped so inner hole is completely hollow) -->
+                    <g clip-path="url(#sixClipPath)">
+                        ${Array.from({ length: depth }, (_, i) => {
+                            const stepY = topY + depth - (i * 0.7);
+                            return `<path d="${pathData}" fill="${sideColor}" transform="translate(0, ${stepY})" />`;
+                        }).join('')}
                     </g>
+
+                    <!-- Outer Silhouette Outline at the bottom -->
+                    <path d="${pathData}" fill="none" stroke="#334155" stroke-width="5" stroke-linejoin="round" transform="translate(0, ${topY + depth})" />
 
                     <!-- Top Surface -->
-                    <g transform="translate(${cx}, ${topY}) scale(1, 0.45)">
-                        <path d="${pathData}" fill="${topColor}" stroke="#334155" stroke-width="6" stroke-linejoin="round"/>
-                    </g>
+                    <path d="${pathData}" fill="${topColor}" stroke="#334155" stroke-width="5" stroke-linejoin="round" transform="translate(0, ${topY})" />
                 </g>
             `;
         }
@@ -746,21 +739,10 @@
                 }
             } else if (shape === 'number') {
                 for (let i = 0; i < count; i++) {
-                    const section = seededRandom(i + seedOffset + 300);
-                    let x, y;
-                    
-                    if (section < 0.45) {
-                        const angle = seededRandom(i + seedOffset + 400) * Math.PI * 2;
-                        const r = 24 + seededRandom(i + seedOffset + 500) * 32;
-                        x = cx + Math.cos(angle) * r;
-                        y = 198 + Math.sin(angle) * (r * 0.42);
-                    } else {
-                        const t = seededRandom(i + seedOffset + 600);
-                        const angle = -Math.PI * 0.15 + t * Math.PI * 0.85;
-                        const r = 28 + seededRandom(i + seedOffset + 700) * 32;
-                        x = (cx - 10) + Math.cos(angle) * r;
-                        y = 158 + Math.sin(angle) * (r * 0.42);
-                    }
+                    const angle = seededRandom(i + seedOffset + 400) * Math.PI * 2;
+                    const r = 25 + seededRandom(i + seedOffset + 500 * i) * 60;
+                    const x = 250 + Math.cos(angle) * r;
+                    const y = 170 + Math.sin(angle) * (r * 0.6);
                     points.push({ x, y });
                 }
             } else {
@@ -810,20 +792,9 @@
                 }
             } else if (shape === 'number') {
                 for (let i = 0; i < count; i++) {
-                    const t = i / count;
-                    let x, y;
-                    if (t < 0.6) {
-                        const angle = (t / 0.6) * Math.PI * 2;
-                        const r = 56;
-                        x = cx + Math.cos(angle) * r;
-                        y = 198 + Math.sin(angle) * (r * 0.42);
-                    } else {
-                        const armT = (t - 0.6) / 0.4;
-                        const angle = -Math.PI * 0.15 + armT * Math.PI * 0.85;
-                        const r = 56;
-                        x = (cx - 10) + Math.cos(angle) * r;
-                        y = 158 + Math.sin(angle) * (r * 0.42);
-                    }
+                    const angle = (i / count) * Math.PI * 2;
+                    const x = 250 + Math.cos(angle) * 75;
+                    const y = 170 + Math.sin(angle) * 45;
                     points.push({ x, y });
                 }
             } else {
@@ -944,7 +915,7 @@
                 if (shape === 'square') {
                     pos = { x: cx + 10, y: (260 - cakeState.height) - 17.5 };
                 } else if (shape === 'number') {
-                    pos = { x: 250, y: 190 };
+                    pos = { x: 250, y: 155 };
                 } else {
                     pos = { x: 250, y: topY };
                 }
@@ -982,9 +953,8 @@
                 for (let i = 0; i < count; i++) {
                     const step = (i + 1) / (count + 1);
                     const angle = step * Math.PI * 2;
-                    const r = 28;
-                    const x = cx + Math.cos(angle) * r;
-                    const y = 198 + Math.sin(angle) * (r * 0.42);
+                    const x = 250 + Math.cos(angle) * 55;
+                    const y = 170 + Math.sin(angle) * 35;
                     candlePositions.push({ x, y });
                 }
             } else {
