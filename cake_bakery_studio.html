@@ -584,7 +584,6 @@
             
             const topColor = cakeState.frostingColor;
             const sideColor = flavorObj.base;
-            const sideDarkColor = flavorObj.dark;
 
             html += `
                 <defs>
@@ -599,9 +598,9 @@
             const topTier = { y: baseTierY, width: 280, height: currentHeight, rx: 140, ry: 25 };
 
             if (cakeState.shape === 'number') {
-                html += renderNumberCake(6, sideColor, sideDarkColor, topColor);
+                html += renderNumberCake(6, sideColor, topColor);
             } else {
-                html += renderTier(topTier, 0, cakeState.shape, sideColor, sideDarkColor, topColor);
+                html += renderTier(topTier, 0, cakeState.shape, sideColor, flavorObj.dark, topColor);
             }
 
             let topY;
@@ -678,7 +677,7 @@
             return html;
         }
 
-        function renderNumberCake(num, sideColor, sideDarkColor, topColor) {
+        function renderNumberCake(num, sideColor, topColor) {
             const numStr = "6";
             const cx = 250;
             const topY = 210;
@@ -691,23 +690,27 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Extruded Side Walls (Fully solid white by default, matching flavor when chosen) -->
+                    <!-- Solid Background Block for Extruded Side Walls so it is completely opaque and never clear -->
+                    <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="26" stroke-linejoin="round">${numStr}</text>
+                    </g>
+
+                    <!-- Extruded Side Walls Stack -->
                     ${Array.from({ length: depth }, (_, i) => {
-                        const stepY = topY + depth - i;
-                        const sliceColor = i < 12 ? sideColor : sideDarkColor;
+                        const stepY = topY + depth - (i * 0.7);
                         return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sliceColor}" stroke="${sliceColor}" stroke-width="5" stroke-linejoin="round">${numStr}</text>
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="4" stroke-linejoin="round">${numStr}</text>
                         </g>`;
                     }).join('')}
 
                     <!-- Outer contour outline for definition -->
                     <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
                     </g>
 
                     <!-- Top Surface -->
                     <g transform="translate(${cx}, ${topY}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#334155" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
                     </g>
                 </g>
             `;
