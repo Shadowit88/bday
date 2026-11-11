@@ -370,7 +370,6 @@
         // --- STATE MANAGEMENT ---
         let currentStep = 1;
 
-        // Default: Height locked at 55px, default frosting is white chocolate
         const cakeState = {
             shape: 'circle',
             ageNumber: 6,
@@ -590,9 +589,9 @@
                     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
                         <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
                     </filter>
-                    <!-- Clip path to perfectly hollow out the inner loop tunnel -->
-                    <clipPath id="sixClipPath">
-                        <path d="M 250 145 C 270 145 285 160 285 185 C 285 210 270 225 250 225 C 230 225 215 210 215 185 C 215 160 230 145 250 145 Z" />
+                    <!-- Precise clipping mask for the number 6 inner loop tunnel -->
+                    <clipPath id="sixHoleClip">
+                        <path d="M 250 155 C 268 155 282 170 282 192 C 282 214 268 229 250 229 C 232 229 218 214 218 192 C 218 170 232 155 250 155 Z" />
                     </clipPath>
                 </defs>
             `;
@@ -602,14 +601,14 @@
             const topTier = { y: baseTierY, width: 280, height: currentHeight, rx: 140, ry: 25 };
 
             if (cakeState.shape === 'number') {
-                html += renderNumberCake(6, sideColor, topColor);
+                html += renderNumberCake(sideColor, topColor);
             } else {
                 html += renderTier(topTier, 0, cakeState.shape, sideColor, flavorObj.dark, topColor);
             }
 
             let topY;
             if (cakeState.shape === 'number') {
-                topY = 130; 
+                topY = 135; 
             } else if (cakeState.shape === 'square') {
                 topY = topTier.y - topTier.height; 
             } else {
@@ -681,12 +680,12 @@
             return html;
         }
 
-        function renderNumberCake(num, sideColor, topColor) {
-            const topY = 130;
+        function renderNumberCake(sideColor, topColor) {
+            const topY = 135;
             const depth = 38;
 
-            // Perfectly centered vector path for number 6
-            const pathData = "M 250 70 C 190 70 150 110 150 170 C 150 230 195 255 250 255 C 305 255 350 215 350 170 C 350 125 305 70 250 70 Z";
+            // Correct chunky Fredoka-style Number 6 vector path
+            const pathData = "M 250 75 C 185 75 145 115 145 172 C 145 235 195 255 250 255 C 310 255 355 210 355 172 C 355 125 310 75 250 75 Z";
 
             return `
                 <g>
@@ -695,8 +694,8 @@
                         <path d="${pathData}" fill="black" opacity="0.12"/>
                     </g>
 
-                    <!-- Extruded Side Walls (Cleanly clipped so inner hole is completely hollow) -->
-                    <g clip-path="url(#sixClipPath)">
+                    <!-- Extruded Side Walls (Flavored body color, cleanly clipped inner tunnel) -->
+                    <g clip-path="url(#sixHoleClip)">
                         ${Array.from({ length: depth }, (_, i) => {
                             const stepY = topY + depth - (i * 0.7);
                             return `<path d="${pathData}" fill="${sideColor}" transform="translate(0, ${stepY})" />`;
@@ -704,10 +703,10 @@
                     </g>
 
                     <!-- Outer Silhouette Outline at the bottom -->
-                    <path d="${pathData}" fill="none" stroke="#334155" stroke-width="5" stroke-linejoin="round" transform="translate(0, ${topY + depth})" />
+                    <path d="${pathData}" fill="none" stroke="#334155" stroke-width="4.5" stroke-linejoin="round" transform="translate(0, ${topY + depth})" />
 
-                    <!-- Top Surface -->
-                    <path d="${pathData}" fill="${topColor}" stroke="#334155" stroke-width="5" stroke-linejoin="round" transform="translate(0, ${topY})" />
+                    <!-- Top Surface (Frosting Color) -->
+                    <path d="${pathData}" fill="${topColor}" stroke="#334155" stroke-width="4.5" stroke-linejoin="round" transform="translate(0, ${topY})" />
                 </g>
             `;
         }
@@ -740,9 +739,9 @@
             } else if (shape === 'number') {
                 for (let i = 0; i < count; i++) {
                     const angle = seededRandom(i + seedOffset + 400) * Math.PI * 2;
-                    const r = 25 + seededRandom(i + seedOffset + 500 * i) * 60;
+                    const r = 20 + seededRandom(i + seedOffset + 500 * i) * 65;
                     const x = 250 + Math.cos(angle) * r;
-                    const y = 170 + Math.sin(angle) * (r * 0.6);
+                    const y = 175 + Math.sin(angle) * (r * 0.55);
                     points.push({ x, y });
                 }
             } else {
@@ -793,8 +792,8 @@
             } else if (shape === 'number') {
                 for (let i = 0; i < count; i++) {
                     const angle = (i / count) * Math.PI * 2;
-                    const x = 250 + Math.cos(angle) * 75;
-                    const y = 170 + Math.sin(angle) * 45;
+                    const x = 250 + Math.cos(angle) * 78;
+                    const y = 175 + Math.sin(angle) * 45;
                     points.push({ x, y });
                 }
             } else {
@@ -915,7 +914,7 @@
                 if (shape === 'square') {
                     pos = { x: cx + 10, y: (260 - cakeState.height) - 17.5 };
                 } else if (shape === 'number') {
-                    pos = { x: 250, y: 155 };
+                    pos = { x: 250, y: 160 };
                 } else {
                     pos = { x: 250, y: topY };
                 }
@@ -954,7 +953,7 @@
                     const step = (i + 1) / (count + 1);
                     const angle = step * Math.PI * 2;
                     const x = 250 + Math.cos(angle) * 55;
-                    const y = 170 + Math.sin(angle) * 35;
+                    const y = 175 + Math.sin(angle) * 35;
                     candlePositions.push({ x, y });
                 }
             } else {
