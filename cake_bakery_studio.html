@@ -385,7 +385,7 @@
         const flavorColors = {
             chocolate: { base: '#5c3a21', dark: '#3d2514', light: '#7a4e2c', name: 'Chocolate' },
             vanilla: { base: '#fce09b', dark: '#e5c479', light: '#fff1c5', name: 'Vanilla' },
-            plain: { base: '#ffffff', dark: '#cbd5e1', light: '#ffffff', name: 'White Sponge' } 
+            plain: { base: '#ffffff', dark: '#ffffff', light: '#ffffff', name: 'White Sponge' } 
         };
 
         const frostingColors = {
@@ -691,18 +691,23 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Extruded Side Walls (Using plain white base when unselected, or active flavor colors when selected) -->
+                    <!-- Extruded Side Walls (Fully solid white by default, matching flavor when chosen) -->
                     ${Array.from({ length: depth }, (_, i) => {
                         const stepY = topY + depth - i;
                         const sliceColor = i < 12 ? sideColor : sideDarkColor;
                         return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sliceColor}" stroke="#000000" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sliceColor}" stroke="${sliceColor}" stroke-width="5" stroke-linejoin="round">${numStr}</text>
                         </g>`;
                     }).join('')}
 
+                    <!-- Outer contour outline for definition -->
+                    <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                    </g>
+
                     <!-- Top Surface -->
                     <g transform="translate(${cx}, ${topY}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#000000" stroke-width="2" stroke-linejoin="round">${numStr}</text>
+                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#334155" stroke-width="2" stroke-linejoin="round">${numStr}</text>
                     </g>
                 </g>
             `;
