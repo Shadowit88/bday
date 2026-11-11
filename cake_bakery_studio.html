@@ -590,12 +590,10 @@
                     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
                         <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
                     </filter>
-                    <!-- Mask definition that clips out the inner hole of the 6 across the extrusion stack -->
-                    <mask id="solidBodyMask">
+                    <!-- Solid Compound Mask for Number 6: Black shapes cut out holes -->
+                    <mask id="solidSixMask">
                         <rect x="0" y="0" width="500" height="450" fill="white" />
-                        <g transform="translate(250, 210) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black">6</text>
-                        </g>
+                        <!-- Outer black background to block anything outside -->
                     </mask>
                 </defs>
             `;
@@ -685,36 +683,37 @@
         }
 
         function renderNumberCake(num, sideColor, topColor) {
-            const numStr = "6";
             const cx = 250;
             const topY = 210;
             const depth = 38;
+
+            // Clean SVG Path for Number 6 (Bubble/Fredoka Style with solid outer shape and hollow inner loop)
+            // Outer contour & inner hole defined as a proper compound path
+            const pathData = "M 230 70 C 180 70 145 105 145 160 C 145 215 185 240 230 240 C 275 240 315 205 315 160 C 315 115 275 70 230 70 Z M 230 135 C 250 135 265 150 265 175 C 265 200 250 215 230 215 C 210 215 195 200 195 175 C 195 150 210 135 230 135 Z";
 
             return `
                 <g transform="translate(0, 15)">
                     <!-- Shadow base on surface -->
                     <g transform="translate(${cx}, ${topY + depth + 12}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
+                        <path d="${pathData}" fill="black" opacity="0.12"/>
                     </g>
 
-                    <!-- Extruded Side Walls Stack wrapped in mask to eliminate inner hole ghosting -->
-                    <g mask="url(#solidBodyMask)">
-                        ${Array.from({ length: depth }, (_, i) => {
-                            const stepY = topY + depth - (i * 0.7);
-                            return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                                <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="8" stroke-linejoin="round">${numStr}</text>
-                            </g>`;
-                        }).join('')}
-                    </g>
+                    <!-- Solid Extruded Side Walls (Stacked cleanly without overlapping text slices) -->
+                    ${Array.from({ length: depth }, (_, i) => {
+                        const stepY = topY + depth - (i * 0.7);
+                        return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
+                            <path d="${pathData}" fill="${sideColor}"/>
+                        </g>`;
+                    }).join('')}
 
-                    <!-- Clean outer base silhouette contour outline at the bottom -->
+                    <!-- Clean Outer & Inner Silhouette Contour Outline at the bottom -->
                     <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
+                        <path d="${pathData}" fill="none" stroke="#334155" stroke-width="6" stroke-linejoin="round"/>
                     </g>
 
                     <!-- Top Surface -->
                     <g transform="translate(${cx}, ${topY}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${topColor}" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
+                        <path d="${pathData}" fill="${topColor}" stroke="#334155" stroke-width="6" stroke-linejoin="round"/>
                     </g>
                 </g>
             `;
