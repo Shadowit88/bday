@@ -590,6 +590,13 @@
                     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
                         <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
                     </filter>
+                    <!-- Mask to clip out the inner hollow hole so solid extrusion background never fills inside the loop -->
+                    <mask id="numberMask">
+                        <rect x="0" y="0" width="500" height="450" fill="white" />
+                        <g transform="translate(250, 210) scale(1, 0.45)">
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black">6</text>
+                        </g>
+                    </mask>
                 </defs>
             `;
 
@@ -690,20 +697,17 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Solid Background Block for Extruded Side Walls -->
-                    <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
-                        <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="26" stroke-linejoin="round">${numStr}</text>
+                    <!-- Extruded Side Walls Stack (Pure solid sides with clean masked body) -->
+                    <g>
+                        ${Array.from({ length: depth }, (_, i) => {
+                            const stepY = topY + depth - (i * 0.7);
+                            return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
+                                <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}">${numStr}</text>
+                            </g>`;
+                        }).join('')}
                     </g>
 
-                    <!-- Extruded Side Walls Stack (NO STROKES inside) -->
-                    ${Array.from({ length: depth }, (_, i) => {
-                        const stepY = topY + depth - (i * 0.7);
-                        return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}">${numStr}</text>
-                        </g>`;
-                    }).join('')}
-
-                    <!-- Only ONE outer base contour outline at the bottom silhouette -->
+                    <!-- Only ONE clean outer base silhouette contour outline at the bottom -->
                     <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
                     </g>
@@ -1065,7 +1069,7 @@
 
         function downloadCakeImage() {
             playSound('click');
-            const svg = document.getElementById('cakeSvg');
+            constsvg = document.getElementById('cakeSvg');
             if (!svg) return;
 
             const svgData = new XMLSerializer().serializeToString(svg);
