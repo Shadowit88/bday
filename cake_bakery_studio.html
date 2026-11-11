@@ -690,20 +690,20 @@
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="black" opacity="0.12">${numStr}</text>
                     </g>
 
-                    <!-- Solid Background Block for Extruded Side Walls so it is completely opaque and never clear -->
+                    <!-- Solid Background Block for Extruded Side Walls -->
                     <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="26" stroke-linejoin="round">${numStr}</text>
                     </g>
 
-                    <!-- Extruded Side Walls Stack -->
+                    <!-- Extruded Side Walls Stack (NO STROKES inside) -->
                     ${Array.from({ length: depth }, (_, i) => {
                         const stepY = topY + depth - (i * 0.7);
                         return `<g transform="translate(${cx}, ${stepY}) scale(1, 0.45)">
-                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}" stroke="${sideColor}" stroke-width="4" stroke-linejoin="round">${numStr}</text>
+                            <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="${sideColor}">${numStr}</text>
                         </g>`;
                     }).join('')}
 
-                    <!-- Outer contour outline for definition -->
+                    <!-- Only ONE outer base contour outline at the bottom silhouette -->
                     <g transform="translate(${cx}, ${topY + depth}) scale(1, 0.45)">
                         <text x="0" y="0" text-anchor="middle" font-family="'Fredoka One', cursive" font-size="255" fill="none" stroke="#334155" stroke-width="3" stroke-linejoin="round">${numStr}</text>
                     </g>
