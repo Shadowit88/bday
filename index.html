@@ -14,6 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* Typography scaled up 10%, then a further 15% from that size. */
+        html {
+            font-size: 126.5%;
+        }
         body {
             font-family: 'Quicksand', sans-serif;
             background-color: #fdf2f8;
@@ -72,15 +76,15 @@
             <form id="passwordForm" onsubmit="event.preventDefault(); unlockFromInput();" class="space-y-4" novalidate>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-2" data-i18n="landing.label">סיסמה: תאריך הלידה של אלמוג</label>
-                    <div id="passwordDigits" dir="ltr" class="flex justify-center gap-1.5 sm:gap-2">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 1" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 4" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 5" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 6" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 7" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
-                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 8" class="digit-input w-8 h-10 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                    <div id="passwordDigits" dir="ltr" class="flex justify-center gap-0.5 min-[360px]:gap-1 sm:gap-2">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 1" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 2" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 3" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 4" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 5" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 6" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 7" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Digit 8" class="digit-input w-5 h-8 min-[360px]:w-6 min-[360px]:h-9 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border-2 border-slate-200 focus:border-rose-400 focus:outline-none transition">
                     </div>
                 </div>
                 <p id="passwordError" class="hidden text-xs font-bold text-rose-500" role="alert" data-i18n="landing.error">סיסמה שגויה. נסו שוב.</p>
@@ -136,27 +140,27 @@
                 <!-- Step 1 Indicator -->
                 <li class="relative z-10 flex flex-col items-center">
                     <button onclick="goToStep(1)" id="step-btn-1" class="w-10 h-10 rounded-full bg-rose-500 text-white font-heading text-sm flex items-center justify-center shadow-md ring-4 ring-rose-100 transition">1</button>
-                    <span class="text-[11px] font-bold text-rose-600 mt-1 hidden sm:block" data-i18n="step.shape">Shape</span>
+                    <span class="text-[13.915px] font-bold text-rose-600 mt-1 hidden sm:block" data-i18n="step.shape">Shape</span>
                 </li>
                 <!-- Step 2 Indicator -->
                 <li class="relative z-10 flex flex-col items-center">
                     <button onclick="goToStep(2)" id="step-btn-2" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">2</button>
-                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.flavor">Flavor</span>
+                    <span class="text-[13.915px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.flavor">Flavor</span>
                 </li>
                 <!-- Step 3 Indicator -->
                 <li class="relative z-10 flex flex-col items-center">
                     <button onclick="goToStep(3)" id="step-btn-3" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">3</button>
-                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.frosting">Frosting</span>
+                    <span class="text-[13.915px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.frosting">Frosting</span>
                 </li>
                 <!-- Step 4 Indicator -->
                 <li class="relative z-10 flex flex-col items-center">
                     <button onclick="goToStep(4)" id="step-btn-4" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">4</button>
-                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.decorate">Decorate</span>
+                    <span class="text-[13.915px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.decorate">Decorate</span>
                 </li>
                 <!-- Step 5 Indicator -->
                 <li class="relative z-10 flex flex-col items-center">
                     <button onclick="goToStep(5)" id="step-btn-5" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 font-heading text-sm flex items-center justify-center transition">5</button>
-                    <span class="text-[11px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.reveal">Reveal</span>
+                    <span class="text-[13.915px] font-bold text-slate-400 mt-1 hidden sm:block" data-i18n="step.reveal">Reveal</span>
                 </li>
             </ol>
         </nav>
@@ -299,7 +303,7 @@
                             </div>
 
                             <!-- Limit warning notice -->
-                            <div id="toppingLimitNotice" data-i18n="s4.limit" class="hidden text-[11px] font-bold text-rose-500 bg-rose-50 p-2 rounded-xl text-center border border-rose-200">
+                            <div id="toppingLimitNotice" data-i18n="s4.limit" class="hidden text-[13.915px] font-bold text-rose-500 bg-rose-50 p-2 rounded-xl text-center border border-rose-200">
                                 ⚠️ You can only pick up to 2 toppings! Deselect one to choose another.
                             </div>
                         </div>
@@ -992,11 +996,22 @@
             if (cakeState.selectedToppings.includes('marshmallows')) {
                 html += renderMarshmallows(topTier, cakeState.shape, topY, decorationScale);
             }
-            if (cakeState.selectedToppings.includes('oreos')) {
-                html += renderStandingOreos(topTier, cakeState.shape, topY, decorationScale);
+            // Both standing cookies used to get the exact same perimeter points,
+            // which buried the Oreos under the choc chips. Share one ring and
+            // alternate the two kinds so each is clearly visible.
+            const hasOreos = cakeState.selectedToppings.includes('oreos');
+            const hasChocChips = cakeState.selectedToppings.includes('chocchip');
+            const cookiePoints = (hasOreos && hasChocChips)
+                ? interleavedCookiePoints(cakeState.shape, topY)
+                : null;
+
+            if (hasOreos) {
+                html += renderStandingOreos(topTier, cakeState.shape, topY, decorationScale,
+                    cookiePoints ? cookiePoints.oreos : null);
             }
-            if (cakeState.selectedToppings.includes('chocchip')) {
-                html += renderStandingChocChips(topTier, cakeState.shape, topY, decorationScale);
+            if (hasChocChips) {
+                html += renderStandingChocChips(topTier, cakeState.shape, topY, decorationScale,
+                    cookiePoints ? cookiePoints.chocChips : null);
             }
 
             if (cakeState.candleType && cakeState.candleType !== 'none') {
@@ -1353,10 +1368,30 @@
             return html;
         }
 
-        function renderStandingOreos(topTier, shape, topY, decoScale = 1) {
-            let html = '';
+        // One ring of positions, split into alternating Oreo / choc-chip slots.
+        // The total number of cookies stays the same as for a single topping, so
+        // the cake doesn't become crowded when both are chosen.
+        function interleavedCookiePoints(shape, topY) {
             const count = shape === 'number' ? 12 : 16;
             const points = getPerimeterPoints(shape, topY, count);
+            if (shape === 'number') {
+                // The numbered cake samples its perimeter randomly, so sort the
+                // points by angle before alternating to keep the ring order.
+                const cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+                const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+                points.sort((a, b) =>
+                    Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+            }
+            return {
+                oreos: points.filter((_, i) => i % 2 === 1),
+                chocChips: points.filter((_, i) => i % 2 === 0)
+            };
+        }
+
+        function renderStandingOreos(topTier, shape, topY, decoScale = 1, points = null) {
+            let html = '';
+            const count = shape === 'number' ? 12 : 16;
+            points = points || getPerimeterPoints(shape, topY, count);
 
             points.forEach((pt, i) => {
                 const tilt = ((i * 17) % 30) - 15;
@@ -1374,10 +1409,10 @@
             return html;
         }
 
-        function renderStandingChocChips(topTier, shape, topY, decoScale = 1) {
+        function renderStandingChocChips(topTier, shape, topY, decoScale = 1, points = null) {
             let html = '';
             const count = shape === 'number' ? 12 : 16;
-            const points = getPerimeterPoints(shape, topY, count);
+            points = points || getPerimeterPoints(shape, topY, count);
 
             points.forEach((pt, i) => {
                 const tilt = ((i * 23) % 30) - 15;
